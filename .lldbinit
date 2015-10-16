@@ -56,7 +56,6 @@ type synthetic add -x "^QVector<.+>$" -P
             try:
                     return int(name.lstrip('[').rstrip(']'))
             except:
-                    print 'get_child_index broken, called with ' + name
                     return None
 
     def get_child_at_index(self,index):
@@ -77,4 +76,58 @@ type synthetic add -x "^QVector<.+>$" -P
 
     def update(self):
             pass
+DONE
+type summary add -x "^QVector<.+>$" -P
+    return 'size=' + str(valobj.GetChildMemberWithName('d').GetChildMemberWithName('size').GetValueAsUnsigned())
+DONE
+type synthetic add -x "^QList<.+>$" -P
+    def __init__(self, valobj, internal_dict):
+            self.valobj = valobj
+
+    def num_children(self):
+            try:
+                    listDataD = self.valobj.GetChildMemberWithName('p').GetChildMemberWithName('d')
+                    begin = listDataD.GetChildMemberWithName('begin').GetValueAsUnsigned()
+                    end = listDataD.GetChildMemberWithName('end').GetValueAsUnsigned()
+                    return (end - begin)
+            except:
+                    return 0;
+
+    def has_children(self):
+            return True
+
+    def get_child_index(self,name):
+            try:
+                    return int(name.lstrip('[').rstrip(']'))
+            except:
+                    return None
+
+    def get_child_at_index(self,index):
+            if index < 0:
+                    return None
+            if index >= self.num_children():
+                    return None
+            if self.valobj.IsValid() == False:
+                    return None
+            try:
+                    pD = self.valobj.GetChildMemberWithName('p').GetChildMemberWithName('d');
+                    pBegin = pD.GetChildMemberWithName('begin').GetValueAsUnsigned()
+                    pArray = pD.GetChildMemberWithName('array').GetValueAsUnsigned()
+                    pAt = pArray + pBegin + index
+                    type = self.valobj.GetType().GetTemplateArgumentType(0)
+                    elementSize = type.GetByteSize()
+                    voidSize = pD.GetChildMemberWithName('array').GetType().GetByteSize()
+                    return self.valobj.GetChildMemberWithName('p').GetChildMemberWithName('d').GetChildMemberWithName('array').CreateChildAtOffset('[' + str(index) + ']', pBegin + index * voidSize, type)
+            except:
+                    print "boned getchild"
+                    return None
+
+    def update(self):
+            pass
+DONE
+type summary add -x "^QList<.+>$" -P
+    listDataD = valobj.GetChildMemberWithName('p').GetChildMemberWithName('d')
+    begin = listDataD.GetChildMemberWithName('begin').GetValueAsUnsigned()
+    end = listDataD.GetChildMemberWithName('end').GetValueAsUnsigned()
+    return 'size=' + str(end - begin)
 DONE

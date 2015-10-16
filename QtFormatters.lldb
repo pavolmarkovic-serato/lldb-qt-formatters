@@ -4,3 +4,5 @@ type synthetic add -x "^QVector<.+>$" -l QtFormatters.QVector_SyntheticProvider
 type summary add -x "^QVector<.+>$" -e -s "size=${svar%#}"
 type synthetic add -x "^QList<.+>$" -l QtFormatters.QList_SyntheticProvider
 type summary add -x "^QList<.+>$" -e -s "size=${svar%#}"
+type synthetic add -x "^QPointer<.+>$" -l QtFormatters.QPointer_SyntheticProvider
+type summary add -x "^QPointer<.+>$" -e -s "filled="${svar%#}"

@@ -51,9 +51,6 @@ class QVector_SyntheticProvider:
             except:
                     return 0;
 
-    def has_children(self):
-            return True
-
     def get_child_index(self,name):
             try:
                     return int(name.lstrip('[').rstrip(']'))
@@ -75,9 +72,6 @@ class QVector_SyntheticProvider:
             except:
                     return None
 
-    def update(self):
-            pass
-
 class QList_SyntheticProvider:
     def __init__(self, valobj, internal_dict):
             self.valobj = valobj
@@ -90,9 +84,6 @@ class QList_SyntheticProvider:
                     return (end - begin)
             except:
                     return 0;
-
-    def has_children(self):
-            return True
 
     def get_child_index(self,name):
             try:
@@ -120,7 +111,35 @@ class QList_SyntheticProvider:
                     print "boned getchild"
                     return None
 
-    def update(self):
-            pass
+class QPointer_SyntheticProvider:
+    def __init__(self, valobj, internal_dict):
+        self.valobj = valobj
 
+    def num_children(self):
+        try:
+            wp = self.valobj.GetChildMemberWithName('wp')
+            d = wp.GetChildMemberWithName('d')
+            if d.GetValueAsUnsigned() == 0 or d.GetChildMemberWithName('strongref').GetChildMemberWithName('_q_value').GetValueAsUnsigned() == 0 or wp.GetChildMemberWithName('value').GetValueAsUnsigned() == 0:
+                return 0
+            else:
+                return 1
+        except:
+            return 0;
+
+    def get_child_index(self,name):
+        return 0
+
+    def get_child_at_index(self,index):
+        if index < 0:
+            return None
+        if index >= self.num_children():
+            return None
+        if self.valobj.IsValid() == False:
+            return None
+        try:
+            type = self.valobj.GetType().GetTemplateArgumentType(0)
+            return self.valobj.GetChildMemberWithName('wp').GetChildMemberWithName('value').CreateChildAtOffset('value', 0, type)
+        except:
+            print "boned getchild"
+            return None
 

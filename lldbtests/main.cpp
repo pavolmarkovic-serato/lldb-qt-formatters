@@ -2,6 +2,7 @@
 #include <QVector>
 #include <QString>
 #include <QList>
+#include <QPointer>
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +35,10 @@ int main(int argc, char *argv[])
    QList<QList<QString>> lls;
    lls << ls;
    lls << ls;
+
+   QPointer<QCoreApplication> ap;
+   ap = &a;
+
 
    return a.exec();
 }

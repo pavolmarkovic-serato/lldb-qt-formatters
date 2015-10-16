@@ -1,10 +1,6 @@
-command script import ./QtFormatters.py
-
-type summary add -x "^QUrl$" -e -F QUrl_SummaryProvider
-type summary add -x "^QString$" -e -F QString_SummaryProvider
-type synthetic add -x "^QVector<.+>$" -l QVector_SyntheticProvider
-type summary add -x "^QVector<.+>$" -e -F QVector_SummaryProvider
-type synthetic add -x "^QList<.+>$" -l QList_SyntheticProvider
-type summary add -x "^QList<.+>$" -e -F QList_SummaryProvider
-
-
+type summary add -x "^QUrl$" -e -F QtFormatters.QUrl_SummaryProvider
+type summary add -x "^QString$" -e -F QtFormatters.QString_SummaryProvider
+type synthetic add -x "^QVector<.+>$" -l QtFormatters.QVector_SyntheticProvider
+type summary add -x "^QVector<.+>$" -e -s "size=${svar%#}"
+type synthetic add -x "^QList<.+>$" -l QtFormatters.QList_SyntheticProvider
+type summary add -x "^QList<.+>$" -e -s "size=${svar%#}"

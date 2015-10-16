@@ -73,14 +73,10 @@ class QVector_SyntheticProvider:
                     elementSize = type.GetByteSize()
                     return self.valobj.GetChildMemberWithName('d').CreateChildAtOffset('[' + str(index) + ']', doffset + index * elementSize, type)
             except:
-                    print "boned getchild"
                     return None
 
     def update(self):
             pass
-
-def QVector_SummaryProvider(valobj, internal_dict):
-    return 'size=' + str(valobj.GetChildMemberWithName('d').GetChildMemberWithName('size').GetValueAsUnsigned())
 
 class QList_SyntheticProvider:
     def __init__(self, valobj, internal_dict):
@@ -126,11 +122,5 @@ class QList_SyntheticProvider:
 
     def update(self):
             pass
-
-def QList_SummaryProvider(valobj, internal_dict):
-    listDataD = valobj.GetChildMemberWithName('p').GetChildMemberWithName('d')
-    begin = listDataD.GetChildMemberWithName('begin').GetValueAsUnsigned()
-    end = listDataD.GetChildMemberWithName('end').GetValueAsUnsigned()
-    return 'size=' + str(end - begin)
 
 

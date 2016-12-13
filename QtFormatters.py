@@ -1,7 +1,7 @@
 import lldb
 
 def QUrl_SummaryProvider(valobj, internal_dict):
-   return valobj.GetFrame().EvaluateExpression(value.GetName() + '.url((QUrl::FormattingOptions)QUrl::PrettyDecoded).toUtf8().data()');
+   return valobj.GetFrame().EvaluateExpression(valobj.GetName() + '.toString((QUrl::FormattingOptions)QUrl::PrettyDecoded)');
 
 def QString_SummaryProvider(valobj, internal_dict):
    def make_string_from_pointer_with_offset(F,OFFS,L):
